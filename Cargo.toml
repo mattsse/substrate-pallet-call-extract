@@ -10,3 +10,11 @@ homepage = "https://github.com/mattsse/substrate-pallet-solvent"
 repository = "https://github.com/mattsse/substrate-pallet-solvent"
 categories = ["development-tools"]
 keywords = [ "substrate", "polkadot" ]
+
+[dependencies]
+dep-expand = "0.1.0"
+syn = "1.0.74"
+quote = "1.0.9"
+synstructure = "0.12.5"
+
+pallet-balances = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.8' }
