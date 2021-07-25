@@ -1,0 +1,12 @@
+[package]
+name = "substrate-pallet-solvent"
+version = "0.1.2"
+authors = ["Matthias Seitz <matthias.seitz@outlook.de>"]
+edition = "2018"
+description = "Help extract generated pallet code"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/mattsse/substrate-pallet-solvent"
+repository = "https://github.com/mattsse/substrate-pallet-solvent"
+categories = ["development-tools"]
+keywords = [ "substrate", "polkadot" ]
