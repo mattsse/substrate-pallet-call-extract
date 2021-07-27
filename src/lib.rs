@@ -66,7 +66,10 @@ impl PalletCallConfig {
         self
     }
 
-    /// The Name of the `codec` crate
+    /// The name of the `codec` where the `Encode` `Decode` derive macros should
+    /// be accessed from This should the crate name as defined in
+    /// `Cargo.toml`, for example `codec` for: `codec = { package =
+    /// 'parity-scale-codec', version = '2.0.0', features = ['derive']}`
     pub fn codec_crate(mut self, codec: impl Into<String>) -> Self {
         self.codec_crate = Some(codec.into());
         self
@@ -156,8 +159,8 @@ impl PalletCall {
         let name = self.config.name.as_deref().unwrap_or("Call");
         let name = syn::parse_str::<Ident>(name)?;
 
-        // the name of the final call enum
-        let codec_crate = self.config.name.as_deref().unwrap_or("codec");
+        // the codec crate to use
+        let codec_crate = self.config.codec_crate.as_deref().unwrap_or("codec");
         let codec_crate = syn::parse_str::<Ident>(codec_crate)?;
 
         let runtime_dbg = self
