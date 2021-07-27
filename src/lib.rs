@@ -114,6 +114,10 @@ impl PalletCallConfig {
             input,
         })
     }
+
+    pub fn parse_pallet(self, pallet_name: impl AsRef<str>) -> syn::Result<PalletCall> {
+        todo!()
+    }
 }
 
 /// Represents a `pallet::Call` that can be turned into a generic `Call` enum
@@ -301,5 +305,38 @@ pub enum ParameterStyle {
 impl Default for ParameterStyle {
     fn default() -> Self {
         ParameterStyle::Unnamed
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dep_expand::Expander;
+
+    #[test]
+    fn can_extract_balances() {
+        let expander = Expander::default();
+        let content = expander
+            .expand_path("pallet-balances", "pallet::Call".parse().unwrap())
+            .unwrap();
+
+        let expanded = PalletCallConfig::default()
+            .push_derive(syn::parse_str("std::fmt::Debug").unwrap())
+            .parse(&content)
+            .unwrap()
+            .expand()
+            .unwrap();
+
+        let expected = quote! {
+            #[derive(Clone, PartialEq, Eq, codec::Encode, codec::Decode, std::fmt::Debug)]
+            pub enum Call<Source, Balance> {
+                Transfer(Source, #[codec(compact)] Balance),
+                SetBalance(Source, #[codec(compact)] Balance, #[codec(compact)] Balance),
+                ForceTransfer(Source, Source, #[codec(compact)] Balance),
+                TransferKeepAlive(Source, #[codec(compact)] Balance)
+            }
+        };
+
+        assert_eq!(expanded.to_string(), expected.to_string());
     }
 }
