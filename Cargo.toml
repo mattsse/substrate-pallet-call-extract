@@ -1,13 +1,13 @@
 [package]
-name = "substrate-pallet-solvent"
+name = "substrate-pallet-call-extract"
 version = "0.1.2"
 authors = ["Matthias Seitz <matthias.seitz@outlook.de>"]
 edition = "2018"
 description = "Help extract generated pallet code"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/mattsse/substrate-pallet-solvent"
-repository = "https://github.com/mattsse/substrate-pallet-solvent"
+homepage = "https://github.com/mattsse/substrate-pallet-call-extract"
+repository = "https://github.com/mattsse/substrate-pallet-call-extract"
 categories = ["development-tools"]
 keywords = [ "substrate", "polkadot" ]
 
@@ -16,8 +16,9 @@ dep-expand = "0.1.0"
 syn = "1.0.74"
 quote = "1.0.9"
 synstructure = "0.12.5"
-
-pallet-balances = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.8' }
 anyhow = "1.0.42"
 proc-macro2 = "1.0.28"
 Inflector = "0.11.4"
+
+[dev-dependencies]
+pallet-balances = { version = '3.0.0' }
