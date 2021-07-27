@@ -1,9 +1,9 @@
 [package]
 name = "substrate-pallet-call-extract"
-version = "0.1.2"
+version = "0.1.0"
 authors = ["Matthias Seitz <matthias.seitz@outlook.de>"]
 edition = "2018"
-description = "Help extract generated pallet code"
+description = "Extract generated pallet calls and create generic versions of it"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/mattsse/substrate-pallet-call-extract"
