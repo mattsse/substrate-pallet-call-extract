@@ -1,15 +1,14 @@
 //! Extract generated pallet code
 
 use inflector::Inflector;
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::quote;
 use std::collections::BTreeMap;
 use syn::spanned::Spanned;
 use syn::{
-    parse::ParseStream, punctuated::Punctuated, Attribute, Fields, FieldsUnnamed, Ident, Item,
-    Path, PathSegment, Type, TypePath, Variant,
+    punctuated::Punctuated, Attribute, Fields, FieldsUnnamed, Ident, Path, PathSegment, Type,
+    TypePath, Variant,
 };
-use synstructure::{MacroResult, Structure};
 
 /// Additional parameters to configure the pallet expansion
 #[derive(Default)]
@@ -81,7 +80,7 @@ impl PalletCallConfig {
     }
 
     /// Derive `frame_support::RuntimeDebug`
-    pub fn frame_support_runtime_debug(mut self) -> Self {
+    pub fn frame_support_runtime_debug(self) -> Self {
         self.use_runtime_debug_from_crate("frame_support")
     }
 
@@ -114,7 +113,8 @@ impl PalletCallConfig {
     }
 }
 
-/// Represents a `pallet::Call`
+/// Represents a `pallet::Call` that can be turned into a generic `Call` enum
+/// instead of being bound to `T:Config`
 pub struct PalletCall {
     /// Parameters for how to modify expansion
     config: PalletCallConfig,
@@ -125,7 +125,9 @@ pub struct PalletCall {
 impl PalletCall {
     /// Expands the pallet call as configured in the `PalletCallConfig`
     ///
-    /// The returned `TokenStream` will be a call enum in which any unique type bound to the `T:Config` trait of `pallet::Call` (like `T::Balance`) will be replaced by a generic type
+    /// The returned `TokenStream` will be a call enum in which any unique type
+    /// bound to the `T:Config` trait of `pallet::Call` (like `T::Balance`) will
+    /// be replaced by a generic type
     ///
     /// Example
     ///
@@ -171,7 +173,7 @@ impl PalletCall {
         let mut generics = BTreeMap::new();
         let mut variants = Vec::with_capacity(structure.variants().len());
 
-        for variant in structure.variants().into_iter().skip_while(|v| {
+        for variant in structure.variants().iter().skip_while(|v| {
             let ast = v.ast();
             // skip the `__ignore` variant, which is also marked `[codec(skip)]`
             ast.ident.to_string().to_lowercase() == "__ignore"
@@ -205,7 +207,7 @@ impl PalletCall {
                                 })
                         });
                         // create a new field with the generic as type
-                        let ident = syn::parse_str::<Ident>(&generic_ty)?;
+                        let ident = syn::parse_str::<Ident>(generic_ty)?;
                         let mut segments = Punctuated::new();
                         segments.push(PathSegment::from(ident));
                         *path = TypePath {
@@ -254,7 +256,7 @@ impl PalletCall {
         } else {
             let generics = generics
                 .values()
-                .map(|gen| syn::parse_str::<Ident>(&gen))
+                .map(|gen| syn::parse_str::<Ident>(gen))
                 .collect::<Result<Vec<_>, _>>()?;
             quote! {< #( #generics), * > }
         };
@@ -297,8 +299,4 @@ impl Default for ParameterStyle {
     fn default() -> Self {
         ParameterStyle::Unnamed
     }
-}
-
-fn x() {
-    let call = PalletCallConfig::default().variant_name(|s| s.to_string());
 }
