@@ -23,7 +23,7 @@ pub struct PalletCallConfig {
     /// by default the last type path segment is used: `T::Balance` -> `Balance`
     generic_name_conversion: Option<Box<dyn Fn(&TypePath) -> String>>,
     /// How to expand call parameters to variant fields
-    call_parameter_style: ParameterStyle,
+    _call_parameter_style: ParameterStyle,
     /// Whether to keep original comments
     keep_comments: bool,
     /// The name fo the scale codec crate by default it's `codec`
